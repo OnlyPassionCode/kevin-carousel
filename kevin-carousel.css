@@ -1,0 +1,12 @@
+.kevin-stage{
+    display: flex;
+}
+.kevin-stage-outer{
+    overflow-x: hidden;
+}
+.kevin-item{
+    user-select: none; /* Standard */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+}

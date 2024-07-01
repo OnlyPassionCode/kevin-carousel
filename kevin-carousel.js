@@ -2,6 +2,8 @@ class KevinCarousel{
     
     constructor(carousels){
         this.carousels = document.querySelectorAll(carousels);
+        // Show buttons next/previous
+        this.button = false;
         // If the user can drag the carousel
         this.draggable = true;
         // The user want to drag the carousel
@@ -33,6 +35,7 @@ class KevinCarousel{
     init(options){
         this.setItems(options.items);
         this.setPauseLoopOnHover(options.pauseLoopOnHover);
+        this.setButton(options.button);
         this.initListener();
         this.setDraggable(options.draggable);
         this.carousels.forEach(carousel=>{
@@ -52,7 +55,8 @@ class KevinCarousel{
         this.initCancelDragItem();
         this.setLoop(options.loop);
         this.setTimeInterval(options.loopTime);
-        
+        this.initButton();
+
         this.startLoop();
     }
 
@@ -61,6 +65,12 @@ class KevinCarousel{
         if(!Number.isInteger(items)) throw new Error('The items need to be a integer !');
         if(items < 1) throw new Error('The items can not be lower than 1 !');
         this.items = items;
+    }
+
+    setButton(button){
+        if(button === undefined) return;
+        if(typeof button != "boolean") throw new Error('The button need to be a boolean !');
+        this.button = button;
     }
 
     setPauseLoopOnHover(pauseLoopOnHover){
@@ -95,27 +105,55 @@ class KevinCarousel{
         this.draggable = draggable;
     }
 
+    moveItem(stageOuter, toTheRight = true){
+        console.log(toTheRight); // TODO
+        const stage = stageOuter.querySelector('.kevin-stage');
+        if(toTheRight) this.currentTranslateX -= this.gap + this.widthItem;
+        else this.currentTranslateX += this.gap + this.widthItem;
+        const check = this.checkCurrentTranslateX();
+        if(!check){
+            stage.style.transition = "all 0s";
+            console.log(this.currentTranslateX);
+            if(this.items < this.originalItems){
+                if(toTheRight) this.currentTranslateX += this.gap + this.widthItem
+                else this.currentTranslateX -= this.gap + this.widthItem
+            }
+            this.translateStage(stage);
+            setTimeout(() => {
+                if(toTheRight) this.currentTranslateX -= this.gap + this.widthItem;
+                else this.currentTranslateX += this.gap + this.widthItem;
+                stage.style.transition = "all 0.25s";
+                this.translateStage(stage);
+            }, 0);
+        }else this.translateStage(stage);
+    }
+
     startLoop(){
         if(!this.loop) return;
         this.idInterval = setInterval(() => {
-            this.stagesOuter.forEach(stageOuter=>{
-                const stage = stageOuter.querySelector('.kevin-stage');
-                this.currentTranslateX -= this.gap + this.widthItem;
-                const check = this.checkCurrentTranslateX();
-                if(!check){
-                    stage.style.transition = "all 0s";
-                    console.log(this.currentTranslateX);
-                    if(this.items < this.originalItems)
-                        this.currentTranslateX += this.gap + this.widthItem
-                    this.translateStage(stage);
-                    setTimeout(() => {
-                        this.currentTranslateX -= this.gap + this.widthItem;
-                        stage.style.transition = "all 0.25s";
-                        this.translateStage(stage);
-                    }, 0);
-                }else this.translateStage(stage);
-            });
+            this.stagesOuter.forEach(this.moveItem.bind(this));
         }, this.timeInterval);
+    }
+
+    initButton(){
+        if(!this.button) return;
+        this.carousels.forEach((carousel, index)=>{
+
+            const leftArrow = document.createElement('img');
+            leftArrow.onclick = this.previousItem.bind(this, this.stagesOuter[index]);
+            leftArrow.src = "left-arrow.png";
+
+            const rightArrow = document.createElement('img');
+            rightArrow.onclick = this.nextItem.bind(this, this.stagesOuter[index]);
+            rightArrow.src = "right-arrow.png";
+
+            const nav = document.createElement('div');
+            nav.classList.add('kevin-nav');
+
+            nav.append(leftArrow, rightArrow);
+
+            carousel.append(nav);
+        })
     }
 
     initOriginalItems(carousel){
@@ -238,6 +276,14 @@ class KevinCarousel{
 
     translateStage(stage){
         stage.style.translate = this.currentTranslateX + 'px 0px';
+    }
+
+    previousItem(stageOuter){
+        this.moveItem(stageOuter, false);
+    }
+    
+    nextItem(stageOuter){
+        this.moveItem(stageOuter, true);
     }
 
     /**

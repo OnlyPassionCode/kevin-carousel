@@ -5,6 +5,7 @@ addEventListener('DOMContentLoaded', function(){
         'loop': true,
         'loopTime': 1800,
         'pauseLoopOnHover': true,
+        'button': true,
         'items': 3, // bugged
     });
 })

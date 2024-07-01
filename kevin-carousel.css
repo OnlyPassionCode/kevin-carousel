@@ -10,3 +10,10 @@
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
 }
+.kevin-nav{
+    margin-top: 20px;
+    text-align: center;
+}
+.kevin-nav img{
+    cursor: pointer;
+}

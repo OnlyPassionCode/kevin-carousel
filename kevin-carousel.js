@@ -8,12 +8,16 @@ class KevinCarousel{
         this.isDragged = false;
         // Space between each item
         this.gap = 10;
+        // Amount of real image
+        this.originalItems = 0;
         // Items the user can see once
         this.items = 3;
         // Width of items
         this.widthItem = 0;
         // Auto move the carousel
         this.loop = true;
+        // Pause the loop when hover the carousel
+        this.pauseLoopOnHover = false;
         // Time for the loop
         this.timeInterval = 1800;
         // ID of the loop
@@ -28,9 +32,11 @@ class KevinCarousel{
 
     init(options){
         this.setItems(options.items);
+        this.setPauseLoopOnHover(options.pauseLoopOnHover);
         this.initListener();
         this.setDraggable(options.draggable);
         this.carousels.forEach(carousel=>{
+            this.initOriginalItems(carousel);
             const stageOuter = this.initStageOuter();
             this.initStage(carousel, stageOuter);
             this.setSizeItem(stageOuter);
@@ -45,6 +51,7 @@ class KevinCarousel{
         this.stagesOuter.forEach(this.initListenerStageOuter.bind(this));
         this.initCancelDragItem();
         this.setLoop(options.loop);
+        this.setTimeInterval(options.loopTime);
         
         this.startLoop();
     }
@@ -54,6 +61,19 @@ class KevinCarousel{
         if(!Number.isInteger(items)) throw new Error('The items need to be a integer !');
         if(items < 1) throw new Error('The items can not be lower than 1 !');
         this.items = items;
+    }
+
+    setPauseLoopOnHover(pauseLoopOnHover){
+        if(pauseLoopOnHover === undefined) return;
+        if(typeof pauseLoopOnHover != "boolean") throw new Error('The pauseLoopOnHover need to be a boolean !');
+        this.pauseLoopOnHover = pauseLoopOnHover;
+    }
+
+    setTimeInterval(timeInterval){
+        if(timeInterval === undefined) return;
+        if(!Number.isInteger(timeInterval)) throw new Error('The loopTime need to be a integer !');
+        if(timeInterval < 1) throw new Error('The loopTime can not be lower than 1 !');
+        this.timeInterval = timeInterval;
     }
 
     setLoop(loop){
@@ -84,6 +104,9 @@ class KevinCarousel{
                 const check = this.checkCurrentTranslateX();
                 if(!check){
                     stage.style.transition = "all 0s";
+                    console.log(this.currentTranslateX);
+                    if(this.items < this.originalItems)
+                        this.currentTranslateX += this.gap + this.widthItem
                     this.translateStage(stage);
                     setTimeout(() => {
                         this.currentTranslateX -= this.gap + this.widthItem;
@@ -93,6 +116,10 @@ class KevinCarousel{
                 }else this.translateStage(stage);
             });
         }, this.timeInterval);
+    }
+
+    initOriginalItems(carousel){
+        this.originalItems = carousel.querySelectorAll('.item').length;
     }
 
     initCancelDragItem(){
@@ -128,7 +155,7 @@ class KevinCarousel{
 
     initTranslate(stage){
         const widthItem = +stage.querySelector('.kevin-item').style.minWidth.replace('px', '');
-        const translateX = widthItem * 3 + this.items * this.gap;
+        const translateX = widthItem * this.items + this.items * this.gap;
         stage.style.translate = -translateX + "px 0px";
         this.baseTranslateX = -translateX;
         this.currentTranslateX = -translateX;
@@ -167,37 +194,46 @@ class KevinCarousel{
     }
 
     initListenerStageOuter(stageOuter){
-        // If the user specify in the option that he cant drag the carousel
-        if(!this.draggable) return;
+        if(this.draggable){
+            const stage = stageOuter.querySelector('.kevin-stage');
+            
+            stageOuter.addEventListener('mousemove', event=>{
+                if(!this.isDragged) return;
+                this.currentTranslateX = this.prevTranslateX + (event.clientX - this.previousPosXMouse);
+                const check = this.checkCurrentTranslateX();
+                if(!check)
+                    this.previousPosXMouse = event.clientX;
+                this.translateStage(stage);
+            });
+            stageOuter.addEventListener('mousedown', (e)=>{
+                this.isDragged = true;
+                stage.style.transition = "all 0s";
+                stageOuter.style.cursor = 'grab';
+                this.previousPosXMouse = e.clientX;
+                this.prevTranslateX = this.currentTranslateX;
+                clearInterval(this.idInterval);
+            });
+            stageOuter.addEventListener('mouseleave', ()=>{
+                this.isDragged = false;
+                stage.style.transition = "all 0.25s";
+                stageOuter.style.cursor = 'default';
+                if(this.idInterval === -1)
+                    this.startLoop();
+            });
+            stageOuter.addEventListener('mouseup', ()=>{
+                this.isDragged = false;
+                stage.style.transition = "all 0.25s";
+                stageOuter.style.cursor = 'default';
+            });
+        }
 
-        const stage = stageOuter.querySelector('.kevin-stage');
-        
-        stageOuter.addEventListener('mousemove', event=>{
-            if(!this.isDragged) return;
-            this.currentTranslateX = this.prevTranslateX + (event.clientX - this.previousPosXMouse);
-            const check = this.checkCurrentTranslateX();
-            if(!check)
-                this.previousPosXMouse = event.clientX;
-            this.translateStage(stage);
-        });
-        stageOuter.addEventListener('mousedown', (e)=>{
-            this.isDragged = true;
-            stage.style.transition = "all 0s";
-            stageOuter.style.cursor = 'grab';
-            this.previousPosXMouse = e.clientX;
-            this.prevTranslateX = this.currentTranslateX;
-            clearInterval(this.idInterval);
-        });
-        stageOuter.addEventListener('mouseleave', ()=>{
-            this.isDragged = false;
-            stage.style.transition = "all 0.25s";
-            stageOuter.style.cursor = 'default';
-        });
-        stageOuter.addEventListener('mouseup', ()=>{
-            this.isDragged = false;
-            stage.style.transition = "all 0.25s";
-            stageOuter.style.cursor = 'default';
-        });
+        if(this.pauseLoopOnHover){
+            stageOuter.addEventListener('mouseenter', ()=>{
+                clearInterval(this.idInterval);
+                this.idInterval = -1;
+            });
+        }
+
     }
 
     translateStage(stage){
@@ -224,7 +260,7 @@ class KevinCarousel{
     }
 
     isCurrentTranslateXOutOfBoundsRight(){
-        return this.currentTranslateX < this.baseTranslateX - (this.items - 1) * this.gap - (this.items - 1) * this.widthItem;
+        return this.currentTranslateX < (this.baseTranslateX - (this.originalItems - this.items) * this.widthItem) - (this.items - 1) * this.gap - (this.items - 1) * this.widthItem;
     }
 
     isCurrentTranslateXOutOfBoundsLeft(){
@@ -237,7 +273,7 @@ class KevinCarousel{
     }
 
     setCurrentTranslateXResetLeft(){
-        this.currentTranslateX = this.baseTranslateX - 1 * this.widthItem - this.gap;
+        this.currentTranslateX = (this.baseTranslateX - (this.originalItems - this.items) * this.widthItem) - 1 * this.widthItem - this.gap;
         this.prevTranslateX = this.currentTranslateX;
     }
 

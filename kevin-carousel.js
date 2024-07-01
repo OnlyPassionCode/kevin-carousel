@@ -39,6 +39,7 @@ class KevinCarousel{
         this.initListener();
         this.setDraggable(options.draggable);
         this.carousels.forEach(carousel=>{
+            this.initListenerCarousel(carousel);
             this.initOriginalItems(carousel);
             const stageOuter = this.initStageOuter();
             this.initStage(carousel, stageOuter);
@@ -106,14 +107,12 @@ class KevinCarousel{
     }
 
     moveItem(stageOuter, toTheRight = true){
-        console.log(toTheRight); // TODO
         const stage = stageOuter.querySelector('.kevin-stage');
         if(toTheRight) this.currentTranslateX -= this.gap + this.widthItem;
         else this.currentTranslateX += this.gap + this.widthItem;
         const check = this.checkCurrentTranslateX();
         if(!check){
             stage.style.transition = "all 0s";
-            console.log(this.currentTranslateX);
             if(this.items < this.originalItems){
                 if(toTheRight) this.currentTranslateX += this.gap + this.widthItem
                 else this.currentTranslateX -= this.gap + this.widthItem
@@ -131,7 +130,7 @@ class KevinCarousel{
     startLoop(){
         if(!this.loop) return;
         this.idInterval = setInterval(() => {
-            this.stagesOuter.forEach(this.moveItem.bind(this));
+            this.stagesOuter.forEach(stageOuter=>this.moveItem(stageOuter));
         }, this.timeInterval);
     }
 
@@ -231,6 +230,19 @@ class KevinCarousel{
         })
     }
 
+    initListenerCarousel(carousel){
+        if(this.pauseLoopOnHover){
+            carousel.addEventListener('mouseenter', ()=>{
+                clearInterval(this.idInterval);
+                this.idInterval = -1;
+            });
+            carousel.addEventListener('mouseleave', ()=>{
+                if(this.idInterval === -1)
+                    this.startLoop();
+            });
+        }
+    }
+
     initListenerStageOuter(stageOuter){
         if(this.draggable){
             const stage = stageOuter.querySelector('.kevin-stage');
@@ -255,20 +267,11 @@ class KevinCarousel{
                 this.isDragged = false;
                 stage.style.transition = "all 0.25s";
                 stageOuter.style.cursor = 'default';
-                if(this.idInterval === -1)
-                    this.startLoop();
             });
             stageOuter.addEventListener('mouseup', ()=>{
                 this.isDragged = false;
                 stage.style.transition = "all 0.25s";
                 stageOuter.style.cursor = 'default';
-            });
-        }
-
-        if(this.pauseLoopOnHover){
-            stageOuter.addEventListener('mouseenter', ()=>{
-                clearInterval(this.idInterval);
-                this.idInterval = -1;
             });
         }
 

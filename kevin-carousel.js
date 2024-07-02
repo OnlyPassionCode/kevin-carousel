@@ -19,7 +19,7 @@ class KevinCarousel{
         // Auto move the carousel
         this.loop = true;
         // Pause the loop when hover the carousel
-        this.pauseLoopOnHover = false;
+        this.pauseLoopOnHover = true;
         // Time for the loop in milliseconde
         this.timeInterval = 1800;
         // Transition time for item in milliseconde
@@ -38,6 +38,7 @@ class KevinCarousel{
         this.setItems(options.items);
         this.setPauseLoopOnHover(options.pauseLoopOnHover);
         this.setButton(options.button);
+        this.setGap(options.gap);
         this.initListener();
         this.setDraggable(options.draggable);
         this.carousels.forEach(carousel=>{
@@ -50,9 +51,9 @@ class KevinCarousel{
         });
         this.stages.forEach(stage=>{
             this.initClassNames(stage);
-            this.setGap(stage, options.gap);
             this.createClone(stage);
             this.initTranslate(stage);
+            this.initGap(stage);
         });
         this.stagesOuter.forEach(this.initListenerStageOuter.bind(this));
         this.initCancelDragItem();
@@ -103,11 +104,10 @@ class KevinCarousel{
         this.loop = loop;
     }
 
-    setGap(stage, gap){
+    setGap(gap){
         if(gap === undefined) return;
         if(!Number.isInteger(gap)) throw new Error('The gap need to be a integer !');
         this.gap = gap;
-        stage.querySelectorAll('.kevin-item').forEach(item=>item.style.marginRight = this.gap + 'px');
     }
 
     setDraggable(draggable){
@@ -159,6 +159,10 @@ class KevinCarousel{
 
             carousel.append(nav);
         })
+    }
+
+    initGap(stage){
+        stage.querySelectorAll('.kevin-item').forEach(item=>item.style.marginRight = this.gap + 'px');
     }
 
     initOriginalItems(carousel){

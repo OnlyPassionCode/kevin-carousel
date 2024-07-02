@@ -24,14 +24,14 @@ new KevinCarousel('.kevin-carousel').init({
 });
 ```
 ##Options
-gap (number) : Espace en pixels entre les éléments du carrousel. Par défaut : 10.
-draggable (boolean) : Permet le glissement des éléments avec la souris. Par défaut : true.
-loop (boolean) : Active la boucle automatique du carrousel. Par défaut : true.
-loopTime (number) : Temps en millisecondes entre chaque itération de la boucle. Par défaut : 1800.
-transitionTime (number) : Temps en millisecondes de la transition entre les éléments. Par défaut : 250.
-pauseLoopOnHover (boolean) : Met en pause la boucle automatique lorsque la souris survole le carrousel. Par défaut : true.
-button (boolean) : Affiche les boutons de navigation. Par défaut : false.
-items (number) : Nombre d'éléments visibles dans le carrousel. Par défaut : 3.
+- gap (number) : Espace en pixels entre les éléments du carrousel. Par défaut : 10.
+- draggable (boolean) : Permet le glissement des éléments avec la souris. Par défaut : true.
+- loop (boolean) : Active la boucle automatique du carrousel. Par défaut : true.
+- loopTime (number) : Temps en millisecondes entre chaque itération de la boucle. Par défaut : 1800.
+- transitionTime (number) : Temps en millisecondes de la transition entre les éléments. Par défaut : 250.
+- pauseLoopOnHover (boolean) : Met en pause la boucle automatique lorsque la souris survole le carrousel. Par défaut : true.
+- button (boolean) : Affiche les boutons de navigation. Par défaut : false.
+- items (number) : Nombre d'éléments visibles dans le carrousel. Par défaut : 3.
 ##Exemple Complet
 Voici un exemple complet d'utilisation de KevinCarousel dans un fichier HTML :
 

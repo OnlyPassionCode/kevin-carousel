@@ -1,14 +1,14 @@
 
-#KevinCarousel
+# KevinCarousel
 KevinCarousel est une bibliothèque JavaScript légère pour créer des carrousels d'images avec des fonctionnalités personnalisables telles que le glissement, la boucle, et les boutons de navigation.
 
-##Installation
+## Installation
 Ajoutez le script de KevinCarousel à votre projet. Vous pouvez le faire en téléchargeant le fichier JavaScript et en l'incluant dans votre fichier HTML :
 ```javascript
 <script src="path/to/kevin-carousel.js"></script>
 ```
 
-##Utilisation
+## Utilisation
 Créez une instance de KevinCarousel et initialisez-la avec les options désirées :
 
 ```javascript
@@ -23,7 +23,7 @@ new KevinCarousel('.kevin-carousel').init({
     'items': 3,
 });
 ```
-##Options
+## Options
 - gap (number) : Espace en pixels entre les éléments du carrousel. Par défaut : 10.
 - draggable (boolean) : Permet le glissement des éléments avec la souris. Par défaut : true.
 - loop (boolean) : Active la boucle automatique du carrousel. Par défaut : true.
@@ -32,7 +32,8 @@ new KevinCarousel('.kevin-carousel').init({
 - pauseLoopOnHover (boolean) : Met en pause la boucle automatique lorsque la souris survole le carrousel. Par défaut : true.
 - button (boolean) : Affiche les boutons de navigation. Par défaut : false.
 - items (number) : Nombre d'éléments visibles dans le carrousel. Par défaut : 3.
-##Exemple Complet
+
+## Exemple Complet
 Voici un exemple complet d'utilisation de KevinCarousel dans un fichier HTML :
 
 ```html
@@ -67,5 +68,5 @@ Voici un exemple complet d'utilisation de KevinCarousel dans un fichier HTML :
 </body>
 </html>
 ```
-##Licence
+## Licence
 Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.

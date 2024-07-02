@@ -56,6 +56,7 @@ class KevinCarousel{
         this.initCancelDragItem();
         this.setLoop(options.loop);
         this.setTimeInterval(options.loopTime);
+        this.setTransitionTime(options.transitionTime);
         this.initButton();
 
         this.startLoop();
@@ -66,7 +67,7 @@ class KevinCarousel{
         if(!Number.isInteger(items)) throw new Error('The items need to be a integer !');
         if(items < 1) throw new Error('The items can not be lower than 1 !');
         this.items = items;
-    }
+    }    
 
     setButton(button){
         if(button === undefined) return;
@@ -78,6 +79,13 @@ class KevinCarousel{
         if(pauseLoopOnHover === undefined) return;
         if(typeof pauseLoopOnHover != "boolean") throw new Error('The pauseLoopOnHover need to be a boolean !');
         this.pauseLoopOnHover = pauseLoopOnHover;
+    }
+
+    setTransitionTime(transitionTime){
+        if(transitionTime === undefined) return;
+        if(!Number.isInteger(transitionTime)) throw new Error('The transitionTime need to be a integer !');
+        if(transitionTime < 1) throw new Error('The transitionTime can not be lower than 1 !');
+        this.transitionTime = transitionTime;
     }
 
     setTimeInterval(timeInterval){
@@ -117,7 +125,7 @@ class KevinCarousel{
             setTimeout(() => {
                 if(toTheRight) this.currentTranslateX -= this.gap + this.widthItem;
                 else this.currentTranslateX += this.gap + this.widthItem;
-                stage.style.transition = "all 0.25s";
+                stage.style.transition = `all ${this.transitionTime}ms`;
                 this.translateStage(stage);
             }, 1);
         }else this.translateStage(stage);
@@ -193,7 +201,7 @@ class KevinCarousel{
         this.baseTranslateX = -translateX;
         this.currentTranslateX = -translateX;
         setTimeout(() => {
-            stage.style.transition = "all 0.25s";
+            stage.style.transition = `all ${this.transitionTime}ms`;
         }, 1);
     }
 
@@ -260,12 +268,12 @@ class KevinCarousel{
             });
             stageOuter.addEventListener('mouseleave', ()=>{
                 this.isDragged = false;
-                stage.style.transition = "all 0.25s";
+                stage.style.transition = `all ${this.transitionTime}ms`;
                 stageOuter.style.cursor = 'default';
             });
             stageOuter.addEventListener('mouseup', ()=>{
                 this.isDragged = false;
-                stage.style.transition = "all 0.25s";
+                stage.style.transition = `all ${this.transitionTime}ms`;
                 stageOuter.style.cursor = 'default';
             });
         }

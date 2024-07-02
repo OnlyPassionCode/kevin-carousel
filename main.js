@@ -4,6 +4,7 @@ addEventListener('DOMContentLoaded', function(){
         'draggable': true,
         'loop': true,
         'loopTime': 2500,
+        'transitionTime': 500,
         'pauseLoopOnHover': true,
         'button': true,
         'items': 3,

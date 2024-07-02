@@ -113,17 +113,13 @@ class KevinCarousel{
         const check = this.checkCurrentTranslateX();
         if(!check){
             stage.style.transition = "all 0s";
-            if(this.items < this.originalItems){
-                if(toTheRight) this.currentTranslateX += this.gap + this.widthItem
-                else this.currentTranslateX -= this.gap + this.widthItem
-            }
             this.translateStage(stage);
             setTimeout(() => {
                 if(toTheRight) this.currentTranslateX -= this.gap + this.widthItem;
                 else this.currentTranslateX += this.gap + this.widthItem;
                 stage.style.transition = "all 0.25s";
                 this.translateStage(stage);
-            }, 0);
+            }, 1);
         }else this.translateStage(stage);
     }
 
@@ -198,7 +194,7 @@ class KevinCarousel{
         this.currentTranslateX = -translateX;
         setTimeout(() => {
             stage.style.transition = "all 0.25s";
-        }, 0);
+        }, 1);
     }
 
     createClone(stage){
@@ -219,7 +215,7 @@ class KevinCarousel{
     }
 
     setSizeItem(stageOuter){
-        const width = (+stageOuter.getBoundingClientRect().width) - this.gap;
+        const width = (+stageOuter.getBoundingClientRect().width) - (this.items + 1) * this.gap;
         this.widthItem = width / this.items;
         stageOuter.querySelector('.kevin-stage').querySelectorAll('.item').forEach(item=>item.style.minWidth = this.widthItem + 'px');
     }
@@ -261,7 +257,6 @@ class KevinCarousel{
                 stageOuter.style.cursor = 'grab';
                 this.previousPosXMouse = e.clientX;
                 this.prevTranslateX = this.currentTranslateX;
-                clearInterval(this.idInterval);
             });
             stageOuter.addEventListener('mouseleave', ()=>{
                 this.isDragged = false;
@@ -309,20 +304,20 @@ class KevinCarousel{
     }
 
     isCurrentTranslateXOutOfBoundsRight(){
-        return this.currentTranslateX < (this.baseTranslateX - (this.originalItems - this.items) * this.widthItem) - (this.items - 1) * this.gap - (this.items - 1) * this.widthItem;
+        return this.currentTranslateX < (this.baseTranslateX - (this.originalItems - this.items) * this.widthItem) - (this.items) * this.gap - (this.items) * this.widthItem;
     }
 
     isCurrentTranslateXOutOfBoundsLeft(){
-        return this.currentTranslateX > this.baseTranslateX + (this.items - 1) * this.gap + (this.items - 1) * this.widthItem;
+        return this.currentTranslateX > this.baseTranslateX + (this.items) * this.gap + (this.items) * this.widthItem;
     }
 
     setCurrentTranslateXResetRight(){
-        this.currentTranslateX = this.baseTranslateX + 1 * this.widthItem + this.gap;
+        this.currentTranslateX = this.baseTranslateX + this.gap;
         this.prevTranslateX = this.currentTranslateX;
     }
 
     setCurrentTranslateXResetLeft(){
-        this.currentTranslateX = (this.baseTranslateX - (this.originalItems - this.items) * this.widthItem) - 1 * this.widthItem - this.gap;
+        this.currentTranslateX = (this.baseTranslateX - (this.originalItems - this.items) * this.widthItem) - this.gap;
         this.prevTranslateX = this.currentTranslateX;
     }
 

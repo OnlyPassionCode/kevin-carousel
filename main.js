@@ -3,9 +3,9 @@ addEventListener('DOMContentLoaded', function(){
         'gap': 20,
         'draggable': true,
         'loop': true,
-        'loopTime': 1800,
+        'loopTime': 2500,
         'pauseLoopOnHover': true,
         'button': true,
-        'items': 3, // bugged
+        'items': 3,
     });
 })

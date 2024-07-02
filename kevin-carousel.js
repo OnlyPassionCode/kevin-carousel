@@ -266,16 +266,17 @@ class KevinCarousel{
                 this.previousPosXMouse = e.clientX;
                 this.prevTranslateX = this.currentTranslateX;
             });
-            stageOuter.addEventListener('mouseleave', ()=>{
+            stageOuter.addEventListener('mouseleave', stopDrag.bind(this));
+            stageOuter.addEventListener('mouseup', stopDrag.bind(this));
+            
+            function stopDrag(){
                 this.isDragged = false;
                 stage.style.transition = `all ${this.transitionTime}ms`;
                 stageOuter.style.cursor = 'default';
-            });
-            stageOuter.addEventListener('mouseup', ()=>{
-                this.isDragged = false;
-                stage.style.transition = `all ${this.transitionTime}ms`;
-                stageOuter.style.cursor = 'default';
-            });
+                const nearestIndex = Math.round(-this.currentTranslateX / (this.widthItem + this.gap));
+                this.currentTranslateX = -nearestIndex * (this.widthItem + this.gap);
+                this.translateStage(stage); 
+            }
         }
 
     }

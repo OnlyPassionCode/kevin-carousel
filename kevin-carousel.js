@@ -229,7 +229,7 @@ class KevinCarousel{
     }
 
     setSizeItem(stageOuter){
-        const width = (+stageOuter.getBoundingClientRect().width) - (this.items + 1) * this.gap;
+        const width = (+stageOuter.getBoundingClientRect().width) - (this.items - 1) * this.gap;
         this.widthItem = width / this.items;
         stageOuter.querySelector('.kevin-stage').querySelectorAll('.item').forEach(item=>item.style.minWidth = this.widthItem + 'px');
     }

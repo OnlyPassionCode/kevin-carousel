@@ -20,8 +20,10 @@ class KevinCarousel{
         this.loop = true;
         // Pause the loop when hover the carousel
         this.pauseLoopOnHover = false;
-        // Time for the loop
+        // Time for the loop in milliseconde
         this.timeInterval = 1800;
+        // Transition time for item in milliseconde
+        this.transitionTime = 250;
         // ID of the loop
         this.idInterval = -1;
         this.baseTranslateX = 0;

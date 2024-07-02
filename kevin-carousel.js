@@ -319,7 +319,7 @@ class KevinCarousel{
     }
 
     isCurrentTranslateXOutOfBoundsRight(){
-        return this.currentTranslateX < (this.baseTranslateX - (this.originalItems - this.items) * this.widthItem) - (this.items) * this.gap - (this.items) * this.widthItem;
+        return this.currentTranslateX < (this.baseTranslateX - (this.originalItems - this.items) * this.widthItem) - (this.items + 1) * this.gap - (this.items) * this.widthItem;
     }
 
     isCurrentTranslateXOutOfBoundsLeft(){
@@ -327,7 +327,7 @@ class KevinCarousel{
     }
 
     setCurrentTranslateXResetRight(){
-        this.currentTranslateX = this.baseTranslateX + this.gap;
+        this.currentTranslateX = this.baseTranslateX;
         this.prevTranslateX = this.currentTranslateX;
     }
 

@@ -148,7 +148,7 @@ class KevinCarousel{
         this.draggable = draggable;
     }
 
-    moveItem(stageOuter, toTheRight = true){
+    moveItem(stageOuter, toTheRight = true, fast = false){
         const stage = stageOuter.querySelector('.kevin-stage');
         if(toTheRight) this.currentTranslateX -= this.gap + this.widthItem;
         else this.currentTranslateX += this.gap + this.widthItem;
@@ -159,10 +159,18 @@ class KevinCarousel{
             setTimeout(() => {
                 if(toTheRight) this.currentTranslateX -= this.gap + this.widthItem;
                 else this.currentTranslateX += this.gap + this.widthItem;
-                stage.style.transition = `all ${this.transitionTime}ms`;
+                stage.style.transition = `all ${fast ? 150 : this.transitionTime}ms`;
                 this.translateStage(stage);
             }, 1);
-        }else this.translateStage(stage);
+        }else{
+            if(fast){
+                stage.style.transition = `all 150ms`;
+                setTimeout(() => {
+                    stage.style.transition = `all ${this.transitionTime}ms`;
+                }, 1);
+            }
+            this.translateStage(stage);
+        }
     }
 
     startLoop(){
@@ -318,11 +326,11 @@ class KevinCarousel{
     }
 
     previousItem(stageOuter){
-        this.moveItem(stageOuter, false);
+        this.moveItem(stageOuter, false, true);
     }
     
     nextItem(stageOuter){
-        this.moveItem(stageOuter, true);
+        this.moveItem(stageOuter, true, true);
     }
 
     /**

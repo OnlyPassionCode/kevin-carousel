@@ -9,8 +9,11 @@ addEventListener('DOMContentLoaded', function(){
         'button': true,
         'items': 3,
         'responsive': {
-            1000: {
+            800: {
                 'loop': false
+            },
+            1000: {
+                'loop': true
             }
         }
     });

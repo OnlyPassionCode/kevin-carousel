@@ -8,5 +8,10 @@ addEventListener('DOMContentLoaded', function(){
         'pauseLoopOnHover': true,
         'button': true,
         'items': 3,
+        'responsive': {
+            1000: {
+                'loop': false
+            }
+        }
     });
 })

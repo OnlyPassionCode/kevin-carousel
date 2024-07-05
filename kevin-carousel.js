@@ -4,6 +4,7 @@ class KevinCarousel{
         this.carousel = document.querySelector(carousel);
         this.stageOuter = null;
         this.stage = null;
+        this.responsive = {};
         // Show buttons next/previous
         this.button = false;
         // If the user can drag the carousel
@@ -37,17 +38,15 @@ class KevinCarousel{
     }
 
     init(options){
-        this.setItems(options.items);
-        this.setPauseLoopOnHover(options.pauseLoopOnHover);
-        this.setButton(options.button);
-        this.setGap(options.gap);
+        this.initOptions(options);
+        this.checkResponsive();
+        
         this.initListener();
-        this.setDraggable(options.draggable);
         this.initListenerCarousel(this.carousel);
         this.initOriginalItems(this.carousel);
         this.initStageOuter();
         this.initStage(this.carousel, this.stageOuter);
-        this.setSizeItem(this.stageOuter);
+        this.initSizeItem(this.stageOuter);
         this.initListenerStageOuter(this.stageOuter);
         this.initClassNames(this.stage);
         this.createClone(this.stage);
@@ -55,17 +54,52 @@ class KevinCarousel{
         this.initGap(this.stage);
         this.initListenerStageOuter(this.stageOuter);
         this.initCancelDragItem();
-        this.setLoop(options.loop);
-        this.setTimeInterval(options.loopTime);
-        this.setTransitionTime(options.transitionTime);
         this.initButton();
 
         this.startLoop();
     }
 
+    initOptions(options){
+        this.setItems(options.items);
+        this.setPauseLoopOnHover(options.pauseLoopOnHover);
+        this.setButton(options.button);
+        this.setGap(options.gap);
+        this.setLoop(options.loop);
+        this.setTimeInterval(options.loopTime);
+        this.setTransitionTime(options.transitionTime);
+        this.setDraggable(options.draggable);
+        this.setResponsive(options.responsive);
+    }
+
+    checkResponsive(){
+        let toResponsive = null;
+        let higherWidth = 0;
+        for (let options in this.responsive) {
+            options = +options;
+            if(higherWidth > options || options > window.innerWidth) continue;
+            higherWidth = options;
+            toResponsive = this.responsive[options];
+        }
+        if(toResponsive === null) return;
+        this.initOptions(toResponsive);
+    }
+
+    setResponsive(responsive){
+        if(responsive === undefined) return;
+        if(typeof responsive !== 'object' || Array.isArray(responsive) || responsive === null) throw new Error('The responsive need to be a object !');
+        
+        for (let options in responsive) {
+            if(isNaN(options)) throw new Error('The responsive key need to be a integer !');
+            const optionsValue = responsive[options];
+            if(typeof optionsValue !== 'object' || Array.isArray(optionsValue) || optionsValue === null) throw new Error('The responsive value need to be a object !');
+        }
+
+        this.responsive = responsive;
+    }
+
     setItems(items){
         if(items === undefined) return;
-        if(!Number.isInteger(items)) throw new Error('The items need to be a integer !');
+        if(isNaN(items)) throw new Error('The items need to be a integer !');
         if(items < 1) throw new Error('The items can not be lower than 1 !');
         this.items = items;
     }    
@@ -84,14 +118,14 @@ class KevinCarousel{
 
     setTransitionTime(transitionTime){
         if(transitionTime === undefined) return;
-        if(!Number.isInteger(transitionTime)) throw new Error('The transitionTime need to be a integer !');
+        if(isNaN(transitionTime)) throw new Error('The transitionTime need to be a integer !');
         if(transitionTime < 1) throw new Error('The transitionTime can not be lower than 1 !');
         this.transitionTime = transitionTime;
     }
 
     setTimeInterval(timeInterval){
         if(timeInterval === undefined) return;
-        if(!Number.isInteger(timeInterval)) throw new Error('The loopTime need to be a integer !');
+        if(isNaN(timeInterval)) throw new Error('The loopTime need to be a integer !');
         if(timeInterval < 1) throw new Error('The loopTime can not be lower than 1 !');
         this.timeInterval = timeInterval;
     }
@@ -104,7 +138,7 @@ class KevinCarousel{
 
     setGap(gap){
         if(gap === undefined) return;
-        if(!Number.isInteger(gap)) throw new Error('The gap need to be a integer !');
+        if(isNaN(gap)) throw new Error('The gap need to be a integer !');
         this.gap = gap;
     }
 
@@ -219,7 +253,7 @@ class KevinCarousel{
 
     }
 
-    setSizeItem(stageOuter){
+    initSizeItem(stageOuter){
         const width = (+stageOuter.getBoundingClientRect().width) - (this.items - 1) * this.gap;
         this.widthItem = width / this.items;
         stageOuter.querySelector('.kevin-stage').querySelectorAll('.item').forEach(item=>item.style.minWidth = this.widthItem + 'px');
@@ -227,7 +261,8 @@ class KevinCarousel{
 
     initListener(){
         addEventListener('resize', ()=>{
-            this.setSizeItem(this.stageOuter);
+            this.initSizeItem(this.stageOuter);
+            this.checkResponsive();
         })
     }
 

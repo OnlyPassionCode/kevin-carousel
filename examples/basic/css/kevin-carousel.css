@@ -4,7 +4,8 @@
 .kevin-stage-outer{
     overflow-x: hidden;
 }
-.kevin-item{
+.kevin-item,
+.kevin-nav span{
     user-select: none; /* Standard */
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none; /* Firefox */
